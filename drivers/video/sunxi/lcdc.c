@@ -244,7 +244,7 @@ void lcdc_pll_set(struct sunxi_ccm_reg *ccm, int tcon, int dotclock,
 	 * not sync to higher frequencies.
 	 */
 	for (m = min_m; m <= max_m; m++) {
-#ifndef CONFIG_SUNXI_DE2
+#if !defined(CONFIG_SUNXI_DE2) || defined(CONFIG_MACH_SUN8I_V3S)
 		n = (m * dotclock) / step;
 
 		if ((n >= 9) && (n <= 127)) {
@@ -262,7 +262,7 @@ void lcdc_pll_set(struct sunxi_ccm_reg *ccm, int tcon, int dotclock,
 		if (!(m & 1))
 			continue;
 #endif
-
+#ifndef CONFIG_MACH_SUN8I_V3S
 		/* No double clock on DE2 */
 		n = (m * dotclock) / (step * 2);
 		if ((n >= 9) && (n <= 127)) {
@@ -275,6 +275,7 @@ void lcdc_pll_set(struct sunxi_ccm_reg *ccm, int tcon, int dotclock,
 				best_double = 1;
 			}
 		}
+#endif
 	}
 
 #ifdef CONFIG_MACH_SUN6I
